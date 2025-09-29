@@ -1,0 +1,94 @@
+# Docker Compose configuration for Festival Application
+# Provides easy deployment and development environment
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database Service
+  festival-db:
+    image: postgres:15-alpine
+    container_name: festival-database
+    environment:
+      - POSTGRES_DB=festival
+      - POSTGRES_USER=festival_user
+      - POSTGRES_PASSWORD=festival_pass
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - festival_db_data:/var/lib/postgresql/data/pgdata
+      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U festival_user -d festival"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - festival-network
+    labels:
+      - "com.festival.service=database"
+      - "com.festival.version=15"
+
+  # Festival Application Service
+  festival-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: festival-application
+    ports:
+      - "9090:9090"
+    environment:
+      # JVM settings optimized for containers
+      - JAVA_OPTS=-Xmx512m -Xms256m -Djava.security.egd=file:/dev/./urandom
+      # Database connection settings (override application.properties)
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://festival-db:5432/festival
+      - SPRING_DATASOURCE_USERNAME=festival_user
+      - SPRING_DATASOURCE_PASSWORD=festival_pass
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+    depends_on:
+      festival-db:
+        condition: service_healthy
+    networks:
+      - festival-network
+    labels:
+      - "com.festival.service=api"
+      - "com.festival.version=1.0.0"
+
+  # Optional: Redis Cache (for session management/caching)
+  # Uncomment if you need Redis for caching or session management
+  # festival-cache:
+  #   image: redis:7-alpine
+  #   container_name: festival-redis
+  #   ports:
+  #     - "6379:6379"
+  #   command: redis-server --appendonly yes
+  #   volumes:
+  #     - festival_cache_data:/data
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #   restart: unless-stopped
+  #   networks:
+  #     - festival-network
+
+# Networks
+networks:
+  festival-network:
+    driver: bridge
+    name: festival-network
+
+# Volumes for data persistence
+volumes:
+  festival_db_data:
+    name: festival_db_data
+    driver: local

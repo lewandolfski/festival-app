@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database for Festival Application
+  festival-db:
+    image: postgres:15-alpine
+    container_name: festival-postgres
+    environment:
+      POSTGRES_DB: festival_db
+      POSTGRES_USER: festival_user
+      POSTGRES_PASSWORD: festival_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - festival_db_data:/var/lib/postgresql/data
+      - ./docker/init-festival-db.sql:/docker-entrypoint-initdb.d/init-festival-db.sql
+    networks:
+      - festival-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U festival_user -d festival_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MongoDB Database for Review Service
+  review-db:
+    image: mongo:7-jammy
+    container_name: review-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: review_user
+      MONGO_INITDB_ROOT_PASSWORD: review_pass
+      MONGO_INITDB_DATABASE: review_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - review_db_data:/data/db
+      - ./docker/init-review-db.js:/docker-entrypoint-initdb.d/init-review-db.js
+    networks:
+      - festival-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Festival Application (Main Service)
+  festival-app:
+    build:
+      context: ./festival-app
+      dockerfile: Dockerfile
+    container_name: festival-application
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://festival-db:5432/festival_db
+      SPRING_DATASOURCE_USERNAME: festival_user
+      SPRING_DATASOURCE_PASSWORD: festival_pass
+      REVIEW_SERVICE_URL: http://review-service:8080
+    ports:
+      - "9090:9090"
+    depends_on:
+      festival-db:
+        condition: service_healthy
+    networks:
+      - festival-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Review Service (Microservice)
+  review-service:
+    build:
+      context: ./review-service
+      dockerfile: Dockerfile
+    container_name: review-microservice
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATA_MONGODB_URI: mongodb://review_user:review_pass@review-db:27017/review_db?authSource=admin
+      FESTIVAL_SERVICE_URL: http://festival-app:9090
+    ports:
+      - "8080:8080"
+    depends_on:
+      review-db:
+        condition: service_healthy
+    networks:
+      - festival-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+networks:
+  festival-network:
+    driver: bridge
+    name: festival-platform-network
+
+volumes:
+  festival_db_data:
+    name: festival_postgres_data
+  review_db_data:
+    name: review_mongodb_data

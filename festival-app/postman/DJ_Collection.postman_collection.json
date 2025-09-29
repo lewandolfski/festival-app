@@ -1,0 +1,211 @@
+{
+	"info": {
+		"_postman_id": "dj-collection-uuid",
+		"name": "Festival App - DJ Collection",
+		"description": "Collection for testing DJ REST endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create DJ",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Calvin Harris\",\n    \"genre\": \"Electronic Dance Music\",\n    \"email\": \"calvin.harris@example.com\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/api/djs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"djs"
+					]
+				}
+			}
+		},
+		{
+			"name": "Get All DJs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/api/djs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"djs"
+					]
+				}
+			}
+		},
+		{
+			"name": "Get DJ by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/api/djs/{{djId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"djs",
+						"{{djId}}"
+					]
+				}
+			}
+		},
+		{
+			"name": "Update DJ",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Calvin Harris Updated\",\n    \"genre\": \"Progressive House\",\n    \"email\": \"calvin.harris.updated@example.com\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/api/djs/{{djId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"djs",
+						"{{djId}}"
+					]
+				}
+			}
+		},
+		{
+			"name": "Delete DJ",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/api/djs/{{djId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"djs",
+						"{{djId}}"
+					]
+				}
+			}
+		},
+		{
+			"name": "Get DJs by Genre",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/api/djs/genre/Electronic Dance Music",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"djs",
+						"genre",
+						"Electronic Dance Music"
+					]
+				}
+			}
+		},
+		{
+			"name": "Test Validation - Create DJ with Empty Fields",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"\",\n    \"genre\": \"\",\n    \"email\": \"invalid-email\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/api/djs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"djs"
+					]
+				}
+			}
+		},
+		{
+			"name": "Test Error - Update Non-existing DJ",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Non-existing DJ\",\n    \"genre\": \"House\",\n    \"email\": \"nonexisting@example.com\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/api/djs/non-existing-id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"djs",
+						"non-existing-id"
+					]
+				}
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "djId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
