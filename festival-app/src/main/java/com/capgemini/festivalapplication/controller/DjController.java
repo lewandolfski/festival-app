@@ -3,7 +3,7 @@ package com.capgemini.festivalapplication.controller;
 import com.capgemini.festivalapplication.dto.DjDto;
 import com.capgemini.festivalapplication.entity.Dj;
 import com.capgemini.festivalapplication.service.DjService;
-import com.capgemini.festivalapplication.service.ReviewServiceClient;
+import com.capgemini.festivalapplication.controller.ReviewServiceClient;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

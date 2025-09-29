@@ -46,8 +46,8 @@ services:
   # Festival Application (Main Service)
   festival-app:
     build:
-      context: ./festival-app
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile.festival-app
     container_name: festival-application
     environment:
       SPRING_PROFILES_ACTIVE: docker
@@ -72,8 +72,8 @@ services:
   # Review Service (Microservice)
   review-service:
     build:
-      context: ./review-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile.review-service
     container_name: review-microservice
     environment:
       SPRING_PROFILES_ACTIVE: docker

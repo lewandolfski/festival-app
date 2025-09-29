@@ -1,4 +1,4 @@
-package com.capgemini.festivalapplication.service;
+package com.capgemini.festivalapplication.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -6,7 +6,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.Duration;
-import java.util.List;
 
 /**
  * Client service for communicating with the Review Microservice.
@@ -16,12 +15,9 @@ import java.util.List;
 public class ReviewServiceClient {
 
     private final WebClient webClient;
-    private final String reviewServiceUrl;
 
-    public ReviewServiceClient(WebClient.Builder webClientBuilder,
-                             @Value("${review.service.url:http://localhost:8080}") String reviewServiceUrl) {
-        this.reviewServiceUrl = reviewServiceUrl;
-        this.webClient = webClientBuilder
+    public ReviewServiceClient(@Value("${review.service.url:http://localhost:8080}") String reviewServiceUrl) {
+        this.webClient = WebClient.builder()
                 .baseUrl(reviewServiceUrl)
                 .build();
     }
