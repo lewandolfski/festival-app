@@ -1,0 +1,93 @@
+<div class="review-form-container">
+  <div class="form-card">
+    <div class="header">
+      <div class="icon-wrapper">
+        <mat-icon>rate_review</mat-icon>
+      </div>
+      <h1>Add Review</h1>
+      <p class="subtitle">Share your festival experience</p>
+    </div>
+
+    <lib-loading-spinner *ngIf="loading"></lib-loading-spinner>
+    
+    <lib-error-message 
+      *ngIf="error && !loading" 
+      [error]="error" 
+      [retryCallback]="onRetry.bind(this)">
+    </lib-error-message>
+
+    <form [formGroup]="reviewForm" (ngSubmit)="onSubmit()" *ngIf="!loading && !error" class="review-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Review Type</mat-label>
+        <mat-select formControlName="subjectType" (selectionChange)="onSubjectTypeChange($event.value)">
+          <mat-option *ngFor="let type of subjectTypes" [value]="type">
+            {{ type }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>category</mat-icon>
+        <mat-error *ngIf="reviewForm.get('subjectType')?.touched && reviewForm.get('subjectType')?.errors">
+          {{ getErrorMessage('subjectType') }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width" *ngIf="selectedSubjectType && selectedSubjectType !== 'EVENT'">
+        <mat-label>Select {{ selectedSubjectType === 'DJ' ? 'DJ' : 'Performance' }}</mat-label>
+        <mat-select formControlName="subjectId">
+          <mat-option *ngFor="let subject of getSubjectOptions()" [value]="subject.id">
+            {{ getSubjectLabel(subject) }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>{{ selectedSubjectType === 'DJ' ? 'person' : 'event' }}</mat-icon>
+        <mat-error *ngIf="reviewForm.get('subjectId')?.touched && reviewForm.get('subjectId')?.errors">
+          {{ getErrorMessage('subjectId') }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Your Name</mat-label>
+        <input matInput formControlName="reviewerName" placeholder="e.g., John Doe">
+        <mat-icon matPrefix>person</mat-icon>
+        <mat-error *ngIf="reviewForm.get('reviewerName')?.touched && reviewForm.get('reviewerName')?.errors">
+          {{ getErrorMessage('reviewerName') }}
+        </mat-error>
+      </mat-form-field>
+
+      <div class="rating-field">
+        <label class="rating-label">Rating</label>
+        <div class="star-rating">
+          <button type="button" 
+                  *ngFor="let star of getStarArray()" 
+                  class="star-button"
+                  [class.active]="reviewForm.get('rating')?.value >= star"
+                  (click)="reviewForm.patchValue({rating: star})">
+            <mat-icon>{{ reviewForm.get('rating')?.value >= star ? 'star' : 'star_border' }}</mat-icon>
+          </button>
+        </div>
+        <span class="rating-value">{{ reviewForm.get('rating')?.value }}/5</span>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Your Review</mat-label>
+        <textarea matInput 
+                  formControlName="comment" 
+                  placeholder="Share your experience..."
+                  rows="5"></textarea>
+        <mat-icon matPrefix>comment</mat-icon>
+        <mat-error *ngIf="reviewForm.get('comment')?.touched && reviewForm.get('comment')?.errors">
+          {{ getErrorMessage('comment') }}
+        </mat-error>
+      </mat-form-field>
+
+      <div class="form-actions">
+        <button mat-stroked-button type="button" (click)="onCancel()" class="cancel-btn">
+          <mat-icon>close</mat-icon>
+          Cancel
+        </button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading || !reviewForm.valid" class="submit-btn">
+          <mat-icon>send</mat-icon>
+          Submit Review
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

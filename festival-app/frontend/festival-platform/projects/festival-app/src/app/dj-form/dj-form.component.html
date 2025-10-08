@@ -1,0 +1,64 @@
+<div class="dj-form-container">
+  <div class="form-card">
+    <div class="header">
+      <div class="icon-wrapper">
+        <mat-icon>{{ isEditMode ? 'edit' : 'person_add' }}</mat-icon>
+      </div>
+      <h1>{{ isEditMode ? 'Edit DJ' : 'Add New DJ' }}</h1>
+      <p class="subtitle">{{ isEditMode ? 'Update DJ information' : 'Add a new DJ to your festival lineup' }}</p>
+    </div>
+
+    <lib-loading-spinner *ngIf="loading"></lib-loading-spinner>
+    
+    <lib-error-message 
+      *ngIf="error && !loading" 
+      [error]="error" 
+      [retryCallback]="onRetry.bind(this)">
+    </lib-error-message>
+
+    <form [formGroup]="djForm" (ngSubmit)="onSubmit()" *ngIf="!loading && !error" class="dj-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>DJ Name</mat-label>
+        <input matInput formControlName="name" placeholder="e.g., DJ Thunderbolt">
+        <mat-icon matPrefix>person</mat-icon>
+        <mat-error *ngIf="djForm.get('name')?.touched && djForm.get('name')?.errors">
+          {{ getErrorMessage('name') }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email Address</mat-label>
+        <input matInput type="email" formControlName="email" placeholder="dj@festival.com">
+        <mat-icon matPrefix>email</mat-icon>
+        <mat-error *ngIf="djForm.get('email')?.touched && djForm.get('email')?.errors">
+          {{ getErrorMessage('email') }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Music Genre</mat-label>
+        <mat-select formControlName="genre" (selectionChange)="onGenreChange($event.value)">
+          <mat-option *ngFor="let genre of availableGenres" [value]="genre">
+            <mat-icon>music_note</mat-icon>
+            {{ genre }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>library_music</mat-icon>
+        <mat-error *ngIf="djForm.get('genre')?.touched && djForm.get('genre')?.errors">
+          {{ getErrorMessage('genre') }}
+        </mat-error>
+      </mat-form-field>
+
+      <div class="form-actions">
+        <button mat-stroked-button type="button" (click)="onCancel()" class="cancel-btn">
+          <mat-icon>close</mat-icon>
+          Cancel
+        </button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading || !djForm.valid" class="submit-btn">
+          <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+          {{ isEditMode ? 'Update DJ' : 'Create DJ' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

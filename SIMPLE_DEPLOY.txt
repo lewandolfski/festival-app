@@ -1,0 +1,90 @@
+=====================================
+  FESTIVAL APP - SIMPLE DEPLOYMENT
+=====================================
+
+CURRENT PC
+----------
+
+1. Stop all services (close PowerShell windows)
+
+2. Run cleanup:
+   .\cleanup-before-zip.ps1
+
+3. Create ZIP (include EVERYTHING in festival-app folder):
+   Compress-Archive -Path ".\*" -DestinationPath "..\festival-app-COMPLETE.zip" -Force
+
+4. Transfer festival-app-COMPLETE.zip to new PC
+
+
+NEW PC
+------
+
+Prerequisites (install FIRST):
+- Java 21 JDK
+- Node.js 20+
+- Docker Desktop (must be running!)
+
+Steps:
+
+1. Unzip to C:\dev\festival-app
+
+2. Open PowerShell in C:\dev\festival-app
+
+3. Run ONCE:
+   .\FIRST_TIME_SETUP.ps1
+   
+   Wait 10-15 minutes (installs everything)
+
+4. Browser opens automatically at http://localhost:4200
+
+DONE!
+
+
+DAILY USE (after first setup)
+------------------------------
+
+.\START_APP.ps1
+
+Takes 2-3 minutes.
+
+
+WHAT IF IT DOESN'T WORK?
+-------------------------
+
+If START_APP.ps1 fails:
+
+1. Check node_modules exists:
+   Test-Path "festival-app\frontend\festival-platform\node_modules"
+   
+   If FALSE, run:
+   cd festival-app\frontend\festival-platform
+   npm install
+   npx ng build shared-lib
+
+2. Check Docker is running:
+   docker ps
+   
+   If error, start Docker Desktop
+
+3. Start manually:
+   cd festival-app\festival-app
+   docker-compose up -d
+   
+   Then run START_APP.ps1
+
+
+IMPORTANT
+---------
+
+The ZIP must include:
+- festival-app/ (all source code)
+- START_APP.ps1
+- FIRST_TIME_SETUP.ps1  
+- cleanup-before-zip.ps1
+- All .md and .txt files
+
+Size: ~20-50 MB (without node_modules)
+After npm install: ~500 MB
+
+
+=====================================

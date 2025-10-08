@@ -1,0 +1,97 @@
+<div class="performance-list-container">
+  <div class="header">
+    <div class="title-section">
+      <h1>🎤 Performances</h1>
+      <p class="subtitle">Schedule and manage festival performances</p>
+    </div>
+    <button mat-raised-button color="primary" routerLink="/performance-form" class="add-button">
+      <mat-icon>add</mat-icon>
+      Add Performance
+    </button>
+  </div>
+
+  <div class="filters-card">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search Performances</mat-label>
+      <input matInput [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" placeholder="Enter performance title...">
+      <mat-icon matPrefix>search</mat-icon>
+      <button mat-icon-button matSuffix (click)="onSearch()" [disabled]="!searchTerm" *ngIf="searchTerm">
+        <mat-icon>send</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <button mat-stroked-button (click)="onClearFilters()" class="clear-button">
+      <mat-icon>clear</mat-icon>
+      Clear
+    </button>
+  </div>
+
+  <lib-loading-spinner *ngIf="loading"></lib-loading-spinner>
+  
+  <lib-error-message 
+    *ngIf="error && !loading" 
+    [error]="error" 
+    [retryCallback]="onRetry.bind(this)">
+  </lib-error-message>
+
+  <div *ngIf="!loading && !error && performances.length > 0" class="performance-grid">
+    <div *ngFor="let performance of performances" class="performance-card">
+      <div class="card-header">
+        <div class="time-badge">
+          <mat-icon>schedule</mat-icon>
+          <span>{{ formatTime(performance.startTime) }}</span>
+        </div>
+        <div class="card-actions">
+          <button mat-icon-button [routerLink]="['/performance-form', performance.id]" matTooltip="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="onDeletePerformance(performance)" matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+      
+      <div class="card-content">
+        <h3 class="performance-title">{{ performance.title }}</h3>
+        <p class="performance-description">{{ performance.description }}</p>
+        
+        <div class="performance-details">
+          <div class="detail-item">
+            <mat-icon>person</mat-icon>
+            <span>{{ getDJName(performance.djId) }}</span>
+          </div>
+          <div class="detail-item">
+            <mat-icon>music_note</mat-icon>
+            <span>{{ getDJGenre(performance.djId) }}</span>
+          </div>
+          <div class="detail-item">
+            <mat-icon>event</mat-icon>
+            <span>{{ formatDate(performance.startTime) }}</span>
+          </div>
+          <div class="detail-item">
+            <mat-icon>timer</mat-icon>
+            <span>{{ performance.durationInHours }}h duration</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card-footer">
+        <div class="time-range">
+          {{ formatTime(performance.startTime) }} - {{ formatTime(performance.endTime) }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !error && performances.length === 0" class="no-data">
+    <div class="empty-state">
+      <mat-icon>event_note</mat-icon>
+      <h2>No Performances Found</h2>
+      <p>Start scheduling your festival by adding the first performance</p>
+      <button mat-raised-button color="primary" routerLink="/performance-form">
+        <mat-icon>add</mat-icon>
+        Add First Performance
+      </button>
+    </div>
+  </div>
+</div>

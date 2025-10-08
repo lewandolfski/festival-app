@@ -1,0 +1,86 @@
+<div class="dj-list-container">
+  <div class="header">
+    <div class="title-section">
+      <h1>🎧 DJs</h1>
+      <p class="subtitle">Manage your festival lineup</p>
+    </div>
+    <button mat-raised-button color="primary" routerLink="/dj-form" class="add-button">
+      <mat-icon>add</mat-icon>
+      Add DJ
+    </button>
+  </div>
+
+  <div class="filters-card">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search DJs</mat-label>
+      <input matInput [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" placeholder="Enter DJ name...">
+      <mat-icon matPrefix>search</mat-icon>
+      <button mat-icon-button matSuffix (click)="onSearch()" [disabled]="!searchTerm" *ngIf="searchTerm">
+        <mat-icon>send</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="genre-field">
+      <mat-label>Filter by Genre</mat-label>
+      <mat-select [(value)]="selectedGenre" (selectionChange)="onGenreFilter()">
+        <mat-option value="">All Genres</mat-option>
+        <mat-option *ngFor="let genre of genres" [value]="genre">
+          {{ genre.replace('_', ' ') }}
+        </mat-option>
+      </mat-select>
+      <mat-icon matPrefix>library_music</mat-icon>
+    </mat-form-field>
+
+    <button mat-stroked-button (click)="onClearFilters()" class="clear-button">
+      <mat-icon>clear</mat-icon>
+      Clear
+    </button>
+  </div>
+
+  <lib-loading-spinner *ngIf="loading"></lib-loading-spinner>
+  
+  <lib-error-message 
+    *ngIf="error && !loading" 
+    [error]="error" 
+    [retryCallback]="onRetry.bind(this)">
+  </lib-error-message>
+
+  <div *ngIf="!loading && !error && djs.length > 0" class="dj-grid">
+    <div *ngFor="let dj of djs" class="dj-card">
+      <div class="card-header">
+        <div class="dj-avatar">{{ dj.name.charAt(0) }}</div>
+        <div class="card-actions">
+          <button mat-icon-button [routerLink]="['/dj-form', dj.id]" matTooltip="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="onDeleteDJ(dj)" matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="card-content">
+        <h3 class="dj-name">{{ dj.name }}</h3>
+        <div class="dj-genre">
+          <mat-icon>music_note</mat-icon>
+          <span>{{ dj.genre }}</span>
+        </div>
+        <div class="dj-email">
+          <mat-icon>email</mat-icon>
+          <span>{{ dj.email }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !error && djs.length === 0" class="no-data">
+    <div class="empty-state">
+      <mat-icon>music_note</mat-icon>
+      <h2>No DJs Found</h2>
+      <p>Start building your festival lineup by adding your first DJ</p>
+      <button mat-raised-button color="primary" routerLink="/dj-form">
+        <mat-icon>add</mat-icon>
+        Add First DJ
+      </button>
+    </div>
+  </div>
+</div>

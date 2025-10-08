@@ -1,0 +1,119 @@
+.dj-form-container {
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+.form-card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 3rem 2rem;
+  text-align: center;
+  color: white;
+  
+  .icon-wrapper {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    mat-icon {
+      font-size: 40px;
+      width: 40px;
+      height: 40px;
+    }
+  }
+  
+  h1 {
+    margin: 0 0 0.75rem 0;
+    font-size: 2rem;
+    font-weight: 700;
+  }
+  
+  .subtitle {
+    margin: 0;
+    font-size: 1rem;
+    opacity: 0.9;
+  }
+}
+
+.dj-form {
+  padding: 2.5rem;
+  
+  .full-width {
+    width: 100%;
+    margin-bottom: 1.5rem;
+  }
+  
+  mat-form-field {
+    ::ng-deep {
+      .mat-mdc-text-field-wrapper {
+        background-color: #f7fafc;
+      }
+      
+      .mat-mdc-form-field-focus-overlay {
+        background-color: transparent;
+      }
+    }
+  }
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e2e8f0;
+  
+  .cancel-btn {
+    min-width: 140px;
+    height: 48px;
+    border-radius: 12px;
+    font-weight: 600;
+  }
+  
+  .submit-btn {
+    min-width: 160px;
+    height: 48px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .dj-form {
+    padding: 1.5rem;
+  }
+  
+  .header {
+    padding: 2rem 1.5rem;
+    
+    h1 {
+      font-size: 1.5rem;
+    }
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    
+    .cancel-btn,
+    .submit-btn {
+      width: 100%;
+    }
+  }
+}

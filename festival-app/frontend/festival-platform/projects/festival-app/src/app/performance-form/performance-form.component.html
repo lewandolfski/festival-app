@@ -1,0 +1,84 @@
+<div class="performance-form-container">
+  <div class="form-card">
+    <div class="header">
+      <div class="icon-wrapper">
+        <mat-icon>{{ isEditMode ? 'edit' : 'event' }}</mat-icon>
+      </div>
+      <h1>{{ isEditMode ? 'Edit Performance' : 'Add New Performance' }}</h1>
+      <p class="subtitle">{{ isEditMode ? 'Update performance details' : 'Schedule a new performance for the festival' }}</p>
+    </div>
+
+    <lib-loading-spinner *ngIf="loading"></lib-loading-spinner>
+    
+    <lib-error-message 
+      *ngIf="error && !loading" 
+      [error]="error" 
+      [retryCallback]="onRetry.bind(this)">
+    </lib-error-message>
+
+    <form [formGroup]="performanceForm" (ngSubmit)="onSubmit()" *ngIf="!loading && !error" class="performance-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Performance Title</mat-label>
+        <input matInput formControlName="title" placeholder="e.g., Electric Night Opening">
+        <mat-icon matPrefix>title</mat-icon>
+        <mat-error *ngIf="performanceForm.get('title')?.touched && performanceForm.get('title')?.errors">
+          {{ getErrorMessage('title') }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput 
+                  formControlName="description" 
+                  placeholder="Describe the performance..."
+                  rows="4"></textarea>
+        <mat-icon matPrefix>description</mat-icon>
+        <mat-error *ngIf="performanceForm.get('description')?.touched && performanceForm.get('description')?.errors">
+          {{ getErrorMessage('description') }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Select DJ</mat-label>
+        <mat-select formControlName="djId">
+          <mat-option *ngFor="let dj of djs" [value]="dj.id">
+            {{ dj.name }} - {{ dj.genre }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>person</mat-icon>
+        <mat-error *ngIf="performanceForm.get('djId')?.touched && performanceForm.get('djId')?.errors">
+          {{ getErrorMessage('djId') }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Start Time</mat-label>
+        <input matInput type="datetime-local" formControlName="startTime">
+        <mat-icon matPrefix>schedule</mat-icon>
+        <mat-error *ngIf="performanceForm.get('startTime')?.touched && performanceForm.get('startTime')?.errors">
+          {{ getErrorMessage('startTime') }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>End Time</mat-label>
+        <input matInput type="datetime-local" formControlName="endTime">
+        <mat-icon matPrefix>schedule</mat-icon>
+        <mat-error *ngIf="performanceForm.get('endTime')?.touched && performanceForm.get('endTime')?.errors">
+          {{ getErrorMessage('endTime') }}
+        </mat-error>
+      </mat-form-field>
+
+      <div class="form-actions">
+        <button mat-stroked-button type="button" (click)="onCancel()" class="cancel-btn">
+          <mat-icon>close</mat-icon>
+          Cancel
+        </button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading || !performanceForm.valid" class="submit-btn">
+          <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+          {{ isEditMode ? 'Update Performance' : 'Create Performance' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

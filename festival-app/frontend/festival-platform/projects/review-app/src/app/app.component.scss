@@ -1,0 +1,23 @@
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.app-title {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.app-content {
+  min-height: calc(100vh - 64px);
+  background-color: #fafafa;
+}
+
+button.active {
+  background-color: rgba(255, 255, 255, 0.2);
+}

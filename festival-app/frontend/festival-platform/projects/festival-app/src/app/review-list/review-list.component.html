@@ -1,0 +1,110 @@
+<div class="review-list-container">
+  <div class="header">
+    <div class="title-section">
+      <h1>⭐ Reviews</h1>
+      <p class="subtitle">Browse and manage festival reviews</p>
+    </div>
+    <button mat-raised-button color="primary" routerLink="/review-form" class="add-button">
+      <mat-icon>add</mat-icon>
+      Add Review
+    </button>
+  </div>
+
+  <div class="filters-card">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search Reviews</mat-label>
+      <input matInput [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" placeholder="Search by reviewer or comment...">
+      <mat-icon matPrefix>search</mat-icon>
+      <button mat-icon-button matSuffix (click)="onSearch()" [disabled]="!searchTerm" *ngIf="searchTerm">
+        <mat-icon>send</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="type-field">
+      <mat-label>Filter by Type</mat-label>
+      <mat-select [(value)]="selectedType" (selectionChange)="onTypeFilter()">
+        <mat-option value="">All Types</mat-option>
+        <mat-option *ngFor="let type of subjectTypes" [value]="type">
+          {{ type }}
+        </mat-option>
+      </mat-select>
+      <mat-icon matPrefix>category</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="rating-field">
+      <mat-label>Filter by Rating</mat-label>
+      <mat-select [(value)]="selectedRating" (selectionChange)="onRatingFilter()">
+        <mat-option value="">All Ratings</mat-option>
+        <mat-option *ngFor="let rating of ratings" [value]="rating">
+          {{ rating }} Stars
+        </mat-option>
+      </mat-select>
+      <mat-icon matPrefix>star</mat-icon>
+    </mat-form-field>
+
+    <button mat-stroked-button (click)="onClearFilters()" class="clear-button">
+      <mat-icon>clear</mat-icon>
+      Clear
+    </button>
+  </div>
+
+  <lib-loading-spinner *ngIf="loading"></lib-loading-spinner>
+  
+  <lib-error-message 
+    *ngIf="error && !loading" 
+    [error]="error" 
+    [retryCallback]="onRetry.bind(this)">
+  </lib-error-message>
+
+  <div *ngIf="!loading && !error && reviews.length > 0" class="review-grid">
+    <div *ngFor="let review of reviews" class="review-card">
+      <div class="card-header">
+        <div class="reviewer-info">
+          <div class="reviewer-avatar">{{ review.reviewerName?.charAt(0) || '?' }}</div>
+          <div class="reviewer-details">
+            <h4>{{ review.reviewerName }}</h4>
+            <span class="review-date">{{ formatDate(review.createdAt) }}</span>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button mat-icon-button color="warn" (click)="onDeleteReview(review)" matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+      
+      <div class="card-content">
+        <div class="rating-section">
+          <div class="stars">
+            <mat-icon *ngFor="let star of getStarArray(review.rating)" [class.filled]="star === 1">
+              {{ star === 1 ? 'star' : 'star_border' }}
+            </mat-icon>
+          </div>
+          <span class="rating-text">{{ review.rating }}/5</span>
+        </div>
+        
+        <p class="review-comment">{{ review.comment }}</p>
+        
+        <div class="review-meta">
+          <mat-chip class="type-chip">{{ review.subjectType }}</mat-chip>
+          <div class="subject-info">
+            <mat-icon>{{ review.subjectType === 'DJ' ? 'person' : 'event' }}</mat-icon>
+            <span>{{ getSubjectName(review) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !error && reviews.length === 0" class="no-data">
+    <div class="empty-state">
+      <mat-icon>rate_review</mat-icon>
+      <h2>No Reviews Found</h2>
+      <p>Be the first to share your festival experience</p>
+      <button mat-raised-button color="primary" routerLink="/review-form">
+        <mat-icon>add</mat-icon>
+        Add First Review
+      </button>
+    </div>
+  </div>
+</div>
