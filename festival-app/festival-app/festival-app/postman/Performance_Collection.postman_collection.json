@@ -1,0 +1,244 @@
+{
+	"info": {
+		"_postman_id": "performance-collection-uuid",
+		"name": "Festival App - Performance Collection",
+		"description": "Collection for testing Performance REST endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Performance",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Main Stage Performance\",\n    \"description\": \"Epic electronic music performance\",\n    \"startTime\": \"2024-07-15T20:00:00\",\n    \"endTime\": \"2024-07-15T22:00:00\",\n    \"djId\": \"{{djId}}\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/api/performances",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"performances"
+					]
+				}
+			}
+		},
+		{
+			"name": "Get All Performances",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/api/performances",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"performances"
+					]
+				}
+			}
+		},
+		{
+			"name": "Get Performance by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/api/performances/{{performanceId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"performances",
+						"{{performanceId}}"
+					]
+				}
+			}
+		},
+		{
+			"name": "Update Performance",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Updated Main Stage Performance\",\n    \"description\": \"Updated epic electronic music performance\",\n    \"startTime\": \"2024-07-15T21:00:00\",\n    \"endTime\": \"2024-07-15T23:00:00\",\n    \"djId\": \"{{djId}}\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/api/performances/{{performanceId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"performances",
+						"{{performanceId}}"
+					]
+				}
+			}
+		},
+		{
+			"name": "Delete Performance",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/api/performances/{{performanceId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"performances",
+						"{{performanceId}}"
+					]
+				}
+			}
+		},
+		{
+			"name": "Get Performances by DJ ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9090/api/performances/dj/{{djId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"performances",
+						"dj",
+						"{{djId}}"
+					]
+				}
+			}
+		},
+		{
+			"name": "Test Validation - Create Performance with Empty Fields",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"\",\n    \"description\": \"\",\n    \"startTime\": null,\n    \"endTime\": null,\n    \"djId\": \"\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/api/performances",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"performances"
+					]
+				}
+			}
+		},
+		{
+			"name": "Test Error - Create Performance with Non-existing DJ",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Performance with Non-existing DJ\",\n    \"description\": \"This should fail\",\n    \"startTime\": \"2024-07-15T20:00:00\",\n    \"endTime\": \"2024-07-15T22:00:00\",\n    \"djId\": \"non-existing-dj-id\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/api/performances",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"performances"
+					]
+				}
+			}
+		},
+		{
+			"name": "Test Error - Update Non-existing Performance",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Non-existing Performance\",\n    \"description\": \"This should fail\",\n    \"startTime\": \"2024-07-15T20:00:00\",\n    \"endTime\": \"2024-07-15T22:00:00\",\n    \"djId\": \"{{djId}}\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/api/performances/non-existing-id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"api",
+						"performances",
+						"non-existing-id"
+					]
+				}
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "djId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "performanceId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

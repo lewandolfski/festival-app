@@ -1,0 +1,9 @@
+# Simple Dockerfile for Festival Application
+FROM eclipse-temurin:21-jre-alpine
+RUN apk add --no-cache curl
+WORKDIR /app
+COPY festival-app/target/festival-application-*.jar app.jar
+EXPOSE 9090
+HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
+  CMD curl -f http://localhost:9090/actuator/health || exit 1
+ENTRYPOINT ["java", "-jar", "app.jar"]
